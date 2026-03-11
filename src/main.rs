@@ -1,9 +1,10 @@
 use std::io;
 use std::io::Write; // for flushing stdout
 use std::collections::HashMap; // for in-memory key-value store
+use std::fs;
 
 fn main() {
-    let mut storage: HashMap<String, String> = HashMap::new(); // In-memory key-value store
+    let mut storage = load().unwrap_or_default(); //if loading fails, just give me an empty HashMap
 
     loop {
         print!("> ");
@@ -29,6 +30,7 @@ fn main() {
                     storage.insert(parts[1].to_string(), parts[2].to_string());
                     println!("Set key '{}' to value '{}'", parts[1], parts[2]);
                 }
+                save(&storage).unwrap();
             },
             "get" => {
                 if parts.len() < 2 {
@@ -52,6 +54,7 @@ fn main() {
                         println!("Key '{}' not found", key);
                     }
                 }
+                save(&storage).unwrap();
             },
             "list" => {
                 if storage.is_empty() {
@@ -67,4 +70,25 @@ fn main() {
             _ => println!("Unknown command: {}", parts[0]),
         }
     }
+}
+
+fn save(storage: &HashMap<String, String>) -> std::io::Result<()> {
+    let json = serde_json::to_string(storage)?;
+    fs::write("data.json", json)?;
+    
+    println!("Saving data to disk...");
+    Ok(())
+}
+
+fn load() -> std::io::Result<HashMap<String, String>> {
+    let storage: HashMap<String, String> = HashMap::new();
+    
+    if let Ok(contents) = fs::read_to_string("data.json") {
+        if let Ok(map) = serde_json::from_str::<HashMap<String, String>>(&contents) {
+            return Ok(map);
+        }
+    }
+    
+    println!("Loading data from disk...");
+    Ok(storage)
 }
