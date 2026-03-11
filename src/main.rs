@@ -8,10 +8,14 @@ fn main() {
 
     loop {
         print!("> ");
-        io::stdout().flush().unwrap();
+        io::stdout()
+            .flush()
+            .expect("Failed to flush stdout"); // Ensure the prompt is printed before waiting for input
 
         let mut input = String::new(); // user input
-        io::stdin().read_line(&mut input).unwrap();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read user input");
 
         let input = input.trim(); // Remove trailing newline
 
@@ -27,10 +31,10 @@ fn main() {
                 if parts.len() < 3 {
                     println!("Usage: set <key> <value>")
                 } else {
-                    storage.insert(parts[1].to_string(), parts[2].to_string());
-                    println!("Set key '{}' to value '{}'", parts[1], parts[2]);
+                    storage.insert(parts[1].to_string(), parts[2..].join(" ").to_string()); // Join the rest of the parts as the value
+                    println!("Set key '{}' to value '{}'", parts[1], parts[2..].join(" "));
                 }
-                save(&storage).unwrap();
+                save(&storage).expect("Failed to save data");
             },
             "get" => {
                 if parts.len() < 2 {
@@ -54,7 +58,7 @@ fn main() {
                         println!("Key '{}' not found", key);
                     }
                 }
-                save(&storage).unwrap();
+                save(&storage).expect("Failed to save data");
             },
             "list" => {
                 if storage.is_empty() {
