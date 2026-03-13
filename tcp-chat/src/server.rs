@@ -8,7 +8,21 @@ fn main() {
     let (mut stream, addr) = listener.accept().unwrap();
     println!("Client connected from {}", addr);
 
-    let mut buffer = [0; 512];
-    let n = stream.read(&mut buffer).unwrap();
-    println!("Received message: {}", String::from_utf8_lossy(&buffer[..n]));
+    loop {
+        let mut buffer = [0; 512];
+        let n = stream.read(&mut buffer).unwrap();
+
+        if n == 0 {
+            println!("Client disconnected.");
+            break;
+        }
+
+        let message = String::from_utf8_lossy(&buffer[..n]);
+        if message.trim().eq_ignore_ascii_case("exit") {
+            println!("Client requested to exit. Closing connection.");
+            break; 
+        }
+
+        println!("Received message: {}", message.trim());
+    }
 }
