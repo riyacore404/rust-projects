@@ -9,7 +9,7 @@ yeah i'm learning rust. no i'm not okay.
 | project | status | what it does |
 |--------|--------|--------------|
 | [kv-store](./kv-store) | ✅ shipped | a CLI key-value store that actually saves to disk. get, set, delete, list. yes it persists. yes i'm proud. |
-| markdown-to-html | 🔨 soon | turns `.md` files into HTML because apparently i hate myself |
+| markdown-to-html | 🚧 in progress | turns `.md` files into HTML because apparently i hate myself |
 | task-queue | 🔨 soon | a to-do list that reads/writes JSON. touching grass is also on the list |
 | tcp-chat | 🔨 soon | a chat server. single client only. my social life irl too |
 
